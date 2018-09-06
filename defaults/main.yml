@@ -5,6 +5,5 @@ redis_port: '6379/tcp'
 redis_exporter_port: '9121/tcp'
 redis_tcp_backlog: '16384'
 redis_timeout: '300'
-redis_tcp-keepalive: '60'
+redis_tcp_keepalive: '60'
 redis_maxclients: '10000'
-redis_maxmemory: 

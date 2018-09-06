@@ -1,1 +1,1 @@
-REDIS_EXPORTER_OPTS='-log.format="logger:syslog?appname=redis_exporter&local=7"'
+REDIS_EXPORTER_OPTS='-log-format="logger:syslog?appname=redis_exporter&local=7"'

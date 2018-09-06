@@ -29,17 +29,6 @@
     - { regexp: '^LimitNOFILE=', line: 'LimitNOFILE=65535' }
   register: systemd_update    
 
-- name: Ensure Redis service is enabled
-  systemd:
-    name: '{{ item }}'
-    enabled: yes
-    state: started
-    daemon_reload: yes
-  with_items:
-    - 'redis.service'
-  when:
-    - ansible_distribution_major_version|int > 6
-
 - name: Ensure Redis firewall port is allow
   firewalld:
     port: '{{ redis_port }}'
@@ -51,7 +40,6 @@
   register: firewalld_update
 
 - name: Reload firewalld service
-  when: result.changed
   service:
     name: firewalld
     state: reloaded

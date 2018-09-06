@@ -13,26 +13,26 @@
     state: 'present'
   with_items:
     - '{{ redis_exporter_packages }}'
+  register: soft_update
 
 - name: redis_exporter configure file transfer
-  template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
+  copy:
+    src: 'redis_exporter'
+    dest: '/etc/default/'
     owner: 'root'
     group: 'root'
     mode: 0644
-  with_items:
-    - { src: 'redis_exporter', dest: '/etc/default/' }    
-  register: result
+  register: conf_update
 
 - name: redis_exporter service is enabled
   systemd:
     name: 'redis_exporter.service'
     enabled: 'yes'
-    state: 'started'
+    state: 'restarted'
     daemon_reload: yes
   when:
-    - result.changed
+    - soft_update.changed
+    - conf_update.changed
 
 - name: Ensure Prometheus firewall port is allow
   firewalld:
@@ -45,7 +45,8 @@
   register: result
 
 - name: Reload firewalld service
-  when: result.changed
   service:
     name: firewalld
     state: reloaded
+  when:
+    - result.changed

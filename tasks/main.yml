@@ -1,17 +1,22 @@
 ---
-- include: '{{ ansible_os_family }}.yml'
+- name: Include OS-specific variables
+  include_vars: '{{ ansible_os_family }}.yml'
+
+- name: Include tasks for specific OS
+  include: '{{ ansible_os_family }}.yml'
+
+- name: Straight to getenforce selinux status
+  include: selinux.yml
 
 - include: 'redis_exporter.yml'
 
 - name: Creating Redis folder
   file:
-    dest: '{{ item }}'
+    dest: '{{ redis_path }}/redis'
     state: directory
     owner: redis
     group: redis
     mode: 0755
-  with_items:
-    - '{{ redis_path }}/redis'
 
 - name: Redis Server Configuration
   lineinfile:
@@ -23,12 +28,12 @@
     - { regexp: '^bind ', line: 'bind 0.0.0.0' }
     - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
     - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
-    - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp-keepalive }}' }
+    - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp_keepalive }}' }
     - { regexp: '^daemonize ', line: 'daemonize yes' }
     - { regexp: '^supervised ', line: 'supervised systemd' }
     - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
     - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
-    - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}' }
+    - { regexp: '^maxmemory ', line: 'maxmemory {{ (ansible_memtotal_mb * 0.5)|int * 1024 * 1024 }}' }
     - { regexp: '^appendonly ', line: 'appendonly yes' }
     - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
   register: result
@@ -46,11 +51,10 @@
 
 - name: Reload the Redis configuration
   systemd:
-    name: '{{ item }}'
+    name: 'redis.service'
     enabled: yes
     state: restarted
-  with_items:
-    - 'redis.service'
+    daemon_reload: yes
   when:
     - result.changed
     - ansible_distribution_major_version|int > 6
