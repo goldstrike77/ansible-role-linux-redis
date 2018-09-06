@@ -1,0 +1,59 @@
+---
+- name: Add Redis YUM repositories
+  yum_repository:
+    name: '{{ redis_repo_name }}'
+    description: '{{ redis_repo_name }} RPM repository for Enterprise Linux'
+    file: '{{ redis_repo_name }}'
+    baseurl: '{{ redis_repo_url }}'
+    gpgcheck: no
+
+- name: install the Redis packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - '{{ redis_packages }}'
+  register: soft_update
+
+- name: Changing Limits for Redis services
+  lineinfile:
+    state: present
+    dest: '/etc/systemd/system/redis.service.d/limit.conf'
+    insertafter: '^\[Service\]'
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: '^LimitMEMLOCK=', line: 'LimitMEMLOCK=infinity' }
+    - { regexp: '^LimitCORE=', line: 'LimitCORE=infinity' }
+    - { regexp: '^LimitNPROC=', line: 'LimitNPROC=65535' }
+    - { regexp: '^LimitNOFILE=', line: 'LimitNOFILE=65535' }
+  register: systemd_update    
+
+- name: Ensure Redis service is enabled
+  systemd:
+    name: '{{ item }}'
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  with_items:
+    - 'redis.service'
+  when:
+    - ansible_distribution_major_version|int > 6
+
+- name: Ensure Redis firewall port is allow
+  firewalld:
+    port: '{{ redis_port }}'
+    permanent: 'true'
+    state: 'enabled'
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version|int > 6
+  register: firewalld_update
+
+- name: Reload firewalld service
+  when: result.changed
+  service:
+    name: firewalld
+    state: reloaded
+  when:
+    - firewalld_update.changed

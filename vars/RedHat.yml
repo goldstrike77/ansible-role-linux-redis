@@ -1,0 +1,12 @@
+---
+redis_repo_name: "remi"
+redis_repo_url: "http://rpms.remirepo.net/enterprise/{{ansible_distribution_version.split('.')[0]}}/remi/{{ansible_architecture}}/"
+disable_gpg_check: yes
+
+redis_packages:
+  - 'redis'
+
+redis_exporter_repo_name: "prometheus-rpm_release"
+redis_exporter_repo_url: "http://cache.omygods.com/prometheus-rpm/release/el/{{ansible_distribution_version.split('.')[0]}}/$basearch"
+redis_exporter_packages:
+  - 'redis_exporter'

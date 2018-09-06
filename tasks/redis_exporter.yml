@@ -1,0 +1,51 @@
+---
+- name: Add redis_exporter YUM repositories
+  yum_repository:
+    name: '{{ redis_exporter_repo_name }}'
+    description: '{{ redis_exporter_repo_name }} YUM repository'
+    file: '{{ redis_exporter_repo_name }}'
+    baseurl: '{{ redis_exporter_repo_url }}'
+    gpgcheck: no
+
+- name: Install the redis_exporter packages
+  yum:
+    name: '{{ item }}'
+    state: 'present'
+  with_items:
+    - '{{ redis_exporter_packages }}'
+
+- name: redis_exporter configure file transfer
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  with_items:
+    - { src: 'redis_exporter', dest: '/etc/default/' }    
+  register: result
+
+- name: redis_exporter service is enabled
+  systemd:
+    name: 'redis_exporter.service'
+    enabled: 'yes'
+    state: 'started'
+    daemon_reload: yes
+  when:
+    - result.changed
+
+- name: Ensure Prometheus firewall port is allow
+  firewalld:
+    port: '{{ redis_exporter_port }}'
+    permanent: 'true'
+    state: 'enabled'
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version|int > 6
+  register: result
+
+- name: Reload firewalld service
+  when: result.changed
+  service:
+    name: firewalld
+    state: reloaded

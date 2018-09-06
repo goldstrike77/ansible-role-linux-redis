@@ -1,0 +1,56 @@
+---
+- include: '{{ ansible_os_family }}.yml'
+
+- include: 'redis_exporter.yml'
+
+- name: Creating Redis folder
+  file:
+    dest: '{{ item }}'
+    state: directory
+    owner: redis
+    group: redis
+    mode: 0755
+  with_items:
+    - '{{ redis_path }}/redis'
+
+- name: Redis Server Configuration
+  lineinfile:
+    state: present
+    dest: /etc/redis.conf
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: '^bind ', line: 'bind 0.0.0.0' }
+    - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
+    - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
+    - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp-keepalive }}' }
+    - { regexp: '^daemonize ', line: 'daemonize yes' }
+    - { regexp: '^supervised ', line: 'supervised systemd' }
+    - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
+    - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
+    - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}' }
+    - { regexp: '^appendonly ', line: 'appendonly yes' }
+    - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
+  register: result
+
+- name: Configure kernel parameters
+  sysctl:
+    name: '{{ item.variable }}'
+    value: '{{ item.value }}'
+    state: present
+    reload: yes
+    sysctl_set: yes
+    sysctl_file: /etc/sysctl.conf
+  with_items:
+    - { variable: 'vm.overcommit_memory', value: '1' }
+
+- name: Reload the Redis configuration
+  systemd:
+    name: '{{ item }}'
+    enabled: yes
+    state: restarted
+  with_items:
+    - 'redis.service'
+  when:
+    - result.changed
+    - ansible_distribution_major_version|int > 6

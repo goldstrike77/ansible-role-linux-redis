@@ -1,0 +1,6 @@
+---
+{% if ansible_memtotal_mb < 4096 %}
+redis_maxmemory = {{ (ansible_memtotal_mb * 0.5)|int * 1024 * 1024 }}
+{% else %}
+redis_maxmemory = {{ (ansible_memtotal_mb * 0.85)|int * 1024 * 1024 }}
+{% endif %}
