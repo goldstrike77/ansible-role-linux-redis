@@ -25,8 +25,8 @@
   with_items:
     - { regexp: '^LimitMEMLOCK=', line: 'LimitMEMLOCK=infinity' }
     - { regexp: '^LimitCORE=', line: 'LimitCORE=infinity' }
-    - { regexp: '^LimitNPROC=', line: 'LimitNPROC=65535' }
-    - { regexp: '^LimitNOFILE=', line: 'LimitNOFILE=65535' }
+    - { regexp: '^LimitNPROC=', line: 'LimitNPROC={{ redis_ulimit_nproc }}' }
+    - { regexp: '^LimitNOFILE=', line: 'LimitNOFILE={{ redis_ulimit_nofile }}' }
   register: systemd_update    
 
 - name: Ensure Redis firewall port is allow

@@ -31,8 +31,7 @@
     state: 'restarted'
     daemon_reload: yes
   when:
-    - soft_update.changed
-    - conf_update.changed
+    - soft_update.changed or conf_update.changed
 
 - name: Ensure Prometheus firewall port is allow
   firewalld:
