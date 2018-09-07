@@ -1,5 +1,6 @@
 ---
 #redis_version: '4'
+redis_selinux: 'false'
 redis_path: '/data'
 redis_port: '6379/tcp'
 redis_exporter_port: '9121/tcp'
