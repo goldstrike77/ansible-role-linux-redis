@@ -1,5 +1,5 @@
 ---
-- name: Add redis_exporter YUM repositories
+- name: Add prometheus redis_exporter YUM repositories
   yum_repository:
     name: '{{ redis_exporter_repo_name }}'
     description: '{{ redis_exporter_repo_name }} YUM repository'
@@ -7,7 +7,7 @@
     baseurl: '{{ redis_exporter_repo_url }}'
     gpgcheck: no
 
-- name: Install the redis_exporter packages
+- name: Install the prometheus redis_exporter
   yum:
     name: '{{ item }}'
     state: 'present'
@@ -15,7 +15,7 @@
     - '{{ redis_exporter_packages }}'
   register: soft_update
 
-- name: redis_exporter configure file transfer
+- name: Prometheus redis_exporter configure file transfer
   copy:
     src: 'redis_exporter'
     dest: '/etc/default/'
@@ -24,7 +24,7 @@
     mode: 0644
   register: conf_update
 
-- name: redis_exporter service is enabled
+- name: Ensure prometheus redis_exporter service is enabled
   systemd:
     name: 'redis_exporter.service'
     enabled: 'yes'

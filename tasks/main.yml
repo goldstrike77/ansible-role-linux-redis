@@ -33,19 +33,19 @@
     - { regexp: '^supervised ', line: 'supervised systemd' }
     - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
     - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
-    - { regexp: '^maxmemory ', line: 'maxmemory {{ (ansible_memtotal_mb * 0.5)|int * 1024 * 1024 }}' }
+    - { regexp: '^maxmemory ', line: 'maxmemory {% if ansible_memtotal_mb < 4095 %}{{ (ansible_memtotal_mb * 0.5)|int }}mb{% else %}{{ (ansible_memtotal_mb * 0.85)|int }}mb{% endif %}' }
     - { regexp: '^appendonly ', line: 'appendonly yes' }
     - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
   register: conf_update
 
-- name: Disabling of specific redis commands
+- name: Rename an unsafe redis command
   lineinfile:
     state: present
     dest: /etc/redis.conf
     regexp: '^rename-command {{ item }}'
     line: 'rename-command {{ item }} "{{ item|hash("md5") }}"'
   with_items:
-    - '{{ redis_disabled_commands }}'
+    - '{{ redis_renamed_commands }}'
   register: comm_update
 
 - name: Configure kernel parameters
