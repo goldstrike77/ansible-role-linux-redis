@@ -1,7 +1,7 @@
 ansible-role-linux-redis
-=========
+========================
 
-Do not use in production environment.
+Testing and development purposes only, should not be used in a production environment.
 
 Install and configure redis on linux operating system.
 
