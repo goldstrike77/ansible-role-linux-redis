@@ -1,5 +1,5 @@
 ---
-redis: 'false'
+redis_is_install: 'false'
 redis_selinux: 'false'
 redis_path: '/data'
 redis_port: '6379/tcp'
