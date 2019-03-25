@@ -8,8 +8,6 @@
 - name: Straight to getenforce selinux status
   include: selinux.yml
 
-- include: 'redis_exporter.yml'
-
 - name: Creating Redis folder
   file:
     dest: '{{ redis_path }}/redis'
@@ -68,3 +66,5 @@
   when:
     - conf_update.changed or comm_update.changed
     - ansible_distribution_major_version|int > 6
+
+- include: 'redis_exporter.yml'

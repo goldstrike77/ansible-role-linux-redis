@@ -2,8 +2,8 @@
 redis_is_install: 'false'
 redis_selinux: 'false'
 redis_path: '/data'
-redis_port: '6379/tcp'
-redis_exporter_port: '9121/tcp'
+redis_port: '6379'
+redis_exporter_port: '9121'
 redis_tcp_backlog: '16384'
 redis_timeout: '300'
 redis_tcp_keepalive: '60'
@@ -25,3 +25,10 @@ redis_renamed_commands:
 #  - 'SAVE'
 #  - 'SPOP'
 #  - 'SREM'
+environments: 'SIT'
+consul_is_register: false
+consul_exporter_token: '00000000-0000-0000-0000-000000000000'
+consul_clients:
+  - '1.1.1.1'
+  - '1.1.1.2'
+consul_http_port: '8500'

@@ -31,7 +31,7 @@
 
 - name: Ensure Redis firewall port is allow
   firewalld:
-    port: '{{ redis_port }}'
+    port: '{{ redis_port }}/tcp'
     permanent: 'true'
     state: 'enabled'
   when:
