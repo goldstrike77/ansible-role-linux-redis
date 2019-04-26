@@ -53,7 +53,7 @@
     state: present
     reload: yes
     sysctl_set: yes
-    sysctl_file: /etc/sysctl.conf
+    sysctl_file: /etc/sysctl.d/20-sysctl.conf
   with_items:
     - { variable: 'vm.overcommit_memory', value: '1' }
 
