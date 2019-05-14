@@ -1,0 +1,11 @@
+---
+- name: Ensure Redis firewall port is allow
+  firewalld:
+    port: '{{ item }}/tcp'
+    zone: 'public'
+    permanent: 'true'
+    immediate: 'true'
+    state: 'enabled'
+  loop:
+    - 'redis_port'
+    - 'redis_exporter_port'
