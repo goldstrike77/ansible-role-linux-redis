@@ -7,5 +7,5 @@
     immediate: 'true'
     state: 'enabled'
   loop:
-    - 'redis_port'
-    - 'redis_exporter_port'
+    - '{{ redis_port }}'
+    - '{{ redis_exporter_port }}'
