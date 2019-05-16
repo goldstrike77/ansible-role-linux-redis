@@ -1,1 +1,16 @@
 ---
+redis_server_parameters:
+  - { regexp: '^bind ', line: 'bind 0.0.0.0' }
+  - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
+  - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
+  - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp_keepalive }}' }
+  - { regexp: '^daemonize ', line: 'daemonize yes' }
+  - { regexp: '^supervised ', line: 'supervised systemd' }
+  - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
+  - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
+  - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}mb' }
+  - { regexp: '^appendonly ', line: 'appendonly yes' }
+  - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
+
+redis_kernel_parameters:
+  - { variable: 'vm.overcommit_memory', value: '1' }

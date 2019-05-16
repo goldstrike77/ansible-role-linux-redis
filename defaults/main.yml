@@ -9,6 +9,7 @@ redis_tcp_backlog: '16384'
 redis_timeout: '300'
 redis_tcp_keepalive: '60'
 redis_maxclients: '10000'
+redis_maxmemory: '{% if ansible_memtotal_mb < 4095 %}{{ (ansible_memtotal_mb * 0.5)|int }}{% else %}{{ (ansible_memtotal_mb * 0.85)|int }}{% endif %}'
 redis_ulimit_nproc: '65535'
 redis_ulimit_nofile: '65535'
 redis_renamed_commands:

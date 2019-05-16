@@ -25,18 +25,7 @@
     dest: /etc/redis.conf
     regexp: '{{ item.regexp }}'
     line: '{{ item.line }}'
-  with_items:
-    - { regexp: '^bind ', line: 'bind 0.0.0.0' }
-    - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
-    - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
-    - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp_keepalive }}' }
-    - { regexp: '^daemonize ', line: 'daemonize yes' }
-    - { regexp: '^supervised ', line: 'supervised systemd' }
-    - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
-    - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
-    - { regexp: '^maxmemory ', line: 'maxmemory {% if ansible_memtotal_mb < 4095 %}{{ (ansible_memtotal_mb * 0.5)|int }}mb{% else %}{{ (ansible_memtotal_mb * 0.85)|int }}mb{% endif %}' }
-    - { regexp: '^appendonly ', line: 'appendonly yes' }
-    - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
+  loop: '{{ redis_server_parameters }}'
   register: conf_update
 
 - name: Rename an unsafe redis command
@@ -45,8 +34,7 @@
     dest: /etc/redis.conf
     regexp: '^rename-command {{ item }}'
     line: 'rename-command {{ item }} "{{ item|hash("md5") }}"'
-  with_items:
-    - '{{ redis_renamed_commands }}'
+  loop: '{{ redis_renamed_commands }}'
   register: comm_update
 
 - name: Configure kernel parameters
@@ -57,8 +45,7 @@
     reload: yes
     sysctl_set: yes
     sysctl_file: /etc/sysctl.d/20-sysctl.conf
-  with_items:
-    - { variable: 'vm.overcommit_memory', value: '1' }
+  loop: '{{ redis_kernel_parameters }}'
 
 - name: Reload the Redis configuration
   systemd:
