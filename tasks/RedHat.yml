@@ -5,14 +5,16 @@
     description: '{{ redis_repo_name }} RPM repository for Enterprise Linux'
     file: '{{ redis_repo_name }}'
     baseurl: '{{ redis_repo_url }}'
-    gpgcheck: no
+    gpgcheck: 'no'
+    timeout: '60'
 
 - name: install the Redis packages
   yum:
     name: '{{ item }}'
     state: present
-  with_items:
-    - '{{ redis_packages }}'
+    validate_certs: 'no'
+    disable_gpg_check: 'yes'
+  loop: '{{ redis_packages }}'
   register: soft_update
 
 - name: Changing Limits for Redis services
@@ -22,7 +24,7 @@
     insertafter: '^\[Service\]'
     regexp: '{{ item.regexp }}'
     line: '{{ item.line }}'
-  with_items:
+  loop:
     - { regexp: '^LimitMEMLOCK=', line: 'LimitMEMLOCK=infinity' }
     - { regexp: '^LimitCORE=', line: 'LimitCORE=infinity' }
     - { regexp: '^LimitNPROC=', line: 'LimitNPROC={{ redis_ulimit_nproc }}' }

@@ -57,7 +57,8 @@
     - conf_update is changed or comm_update is changed
     - ansible_distribution_major_version|int > 6
 
-- include: 'exporter.yml'
+- name: Include prometheus exporter tasks
+  include: 'exporter.yml'
 
 - name: Registered with HashiCorp Consul
   include: 'register.yml'

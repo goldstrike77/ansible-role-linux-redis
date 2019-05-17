@@ -5,18 +5,20 @@
     description: '{{ redis_exporter_repo_name }} YUM repository'
     file: '{{ redis_exporter_repo_name }}'
     baseurl: '{{ redis_exporter_repo_url }}'
-    gpgcheck: no
+    gpgcheck: 'no'
+    timeout: '60'
 
 - name: Install the prometheus redis_exporter
   yum:
     name: '{{ item }}'
     state: 'present'
-  with_items:
-    - '{{ redis_exporter_packages }}'
+    validate_certs: 'no'
+    disable_gpg_check: 'yes'
+  loop: '{{ redis_exporter_packages }}'
   register: soft_update
 
 - name: Prometheus redis_exporter configure file transfer
-  copy:
+  template:
     src: 'redis_exporter'
     dest: '/etc/default/'
     owner: 'root'
@@ -29,6 +31,6 @@
     name: 'redis_exporter.service'
     enabled: 'yes'
     state: 'restarted'
-    daemon_reload: yes
+    daemon_reload: 'yes'
   when:
-    - soft_update.changed or conf_update.changed
+    - soft_update is changed or conf_update is changed

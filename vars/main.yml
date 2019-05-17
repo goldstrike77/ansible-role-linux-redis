@@ -7,6 +7,7 @@ redis_server_parameters:
   - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
   - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}mb' }
   - { regexp: '^port ', line: 'port {{ redis_port }}' }
+  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass }}' }
   - { regexp: '^supervised ', line: 'supervised systemd' }
   - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
   - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
