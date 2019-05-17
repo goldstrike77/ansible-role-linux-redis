@@ -25,6 +25,7 @@
     group: 'root'
     mode: 0644
   register: conf_update
+  no_log: true
 
 - name: Ensure prometheus redis_exporter service is enabled
   systemd:

@@ -27,6 +27,7 @@
     line: '{{ item.line }}'
   loop: '{{ redis_server_parameters }}'
   register: conf_update
+  no_log: true
 
 - name: Rename an unsafe redis command
   lineinfile:
