@@ -8,7 +8,7 @@
     gpgcheck: 'no'
     timeout: '60'
 
-- name: install the Redis packages
+- name: Install the Redis packages
   yum:
     name: '{{ item }}'
     state: present
