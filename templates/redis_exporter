@@ -1,1 +1,1 @@
-REDIS_EXPORTER_OPTS='-web.listen-address=":{{ redis_exporter_port }}" -log-format="logger:syslog?appname=redis_exporter&local=7" -redis.password="{{ redis_requirepass | default("password") }}"'
+REDIS_EXPORTER_OPTS='-web.listen-address=":{{ redis_exporter_port }}" -redis.addr="redis://{{ ansible_default_ipv4.address }}:{{ redis_port }}" -log-format="logger:syslog?appname=redis_exporter&local=7" -redis.password="{{ redis_requirepass | default("password") }}"'
