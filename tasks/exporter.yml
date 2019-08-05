@@ -16,14 +16,18 @@
     disable_gpg_check: 'yes'
   loop: '{{ redis_exporter_packages }}'
   register: soft_update
+  until: soft_update is succeeded
+  retries: 3
+  delay: 5
 
 - name: Prometheus redis_exporter configure file transfer
   template:
     src: 'redis_exporter'
     dest: '/etc/default/'
+    backup: 'yes'
     owner: 'root'
     group: 'root'
-    mode: 0644
+    mode: '0644'
   register: conf_update
   no_log: true
 

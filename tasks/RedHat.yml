@@ -1,4 +1,7 @@
 ---
+- name: Include OS-specific variables
+  include_vars: '{{ ansible_os_family }}.yml'
+
 - name: Add Redis YUM repositories
   yum_repository:
     name: '{{ redis_repo_name }}'
@@ -11,15 +14,18 @@
 - name: Install the Redis packages
   yum:
     name: '{{ item }}'
-    state: present
+    state: 'present'
     validate_certs: 'no'
     disable_gpg_check: 'yes'
   loop: '{{ redis_packages }}'
   register: soft_update
+  until: soft_update is succeeded
+  retries: 3
+  delay: 5
 
 - name: Changing Limits for Redis services
   lineinfile:
-    state: present
+    state: 'present'
     dest: '/etc/systemd/system/redis.service.d/limit.conf'
     insertafter: '^\[Service\]'
     regexp: '{{ item.regexp }}'
