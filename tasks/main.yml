@@ -48,19 +48,19 @@
 - name: Reload the Redis configuration
   systemd:
     name: 'redis.service'
-    enabled: yes
-    state: restarted
-    daemon_reload: yes
+    enabled: 'yes'
+    state: 'restarted'
+    daemon_reload: 'yes'
   when:
     - conf_update is changed or comm_update is changed
     - ansible_distribution_major_version|int > 6
 
 - name: Include prometheus exporter tasks
   include: 'exporter.yml'
-  when: exporter_is_install
+  when: exporter_is_install | bool
 
 - name: Registered with HashiCorp Consul
   include: 'register.yml'
   when:
-    - exporter_is_install
-    - consul_public_register
+    - exporter_is_install | bool
+    - consul_public_register | bool

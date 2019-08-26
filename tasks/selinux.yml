@@ -25,4 +25,4 @@
   async: 35
   poll: 0
   when:
-    - redis_selinux 
+    - redis_selinux | bool
