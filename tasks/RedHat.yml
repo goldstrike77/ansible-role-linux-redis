@@ -13,11 +13,10 @@
 
 - name: Install the Redis packages
   yum:
-    name: '{{ item }}'
+    name: '{{ redis_packages }}'
     state: 'present'
     validate_certs: 'no'
     disable_gpg_check: 'yes'
-  loop: '{{ redis_packages }}'
   register: soft_update
   until: soft_update is succeeded
   retries: 3

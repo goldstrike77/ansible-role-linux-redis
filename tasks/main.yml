@@ -6,7 +6,7 @@
   include: 'firewall.yml'
 
 - name: Straight to getenforce selinux status
-  include: selinux.yml
+  include: 'selinux.yml'
 
 - name: Creating Redis folder
   file:

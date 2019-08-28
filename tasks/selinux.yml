@@ -24,5 +24,4 @@
   become: yes
   async: 35
   poll: 0
-  when:
-    - redis_selinux | bool
+  when: redis_selinux | bool

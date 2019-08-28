@@ -37,5 +37,4 @@
     enabled: 'yes'
     state: 'restarted'
     daemon_reload: 'yes'
-  when:
-    - soft_update is changed or conf_update is changed
+  when: soft_update is changed or conf_update is changed
