@@ -42,11 +42,10 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_requirepass`: Authorization clients password.
 
 ##### Service Mesh
-* `subscription`: Define the service subscription.
-* `region`: Define the service region.
 * `environments`: Define the service environment.
+* `tags`: Define the service custom label.
 * `exporter_is_install`: Whether to install prometheus exporter.
-* `consul_public_register`: Whether register a exporter service with public consul client.
+* `consul_public_register`: false Whether register a exporter service with public consul client.
 * `consul_public_exporter_token`: Public Consul client ACL token.
 * `consul_public_clients`: List of public consul clients.
 * `consul_public_http_port`: The consul HTTP API port.
@@ -100,9 +99,13 @@ You can also use the group_vars or the host_vars files for setting the variables
       - 'CONFIG'
       - 'DEBUG'
       - 'SHUTDOWN'
-    subscription: 'default'
-    region: 'default'
     environments: 'SIT'
+    tags:
+      subscription: 'default'
+      owner: 'nobody'
+      department: 'Infrastructure'
+      organization: 'The Company'
+      region: 'IDC01'
     exporter_is_install: false
     consul_public_register: false
     consul_public_exporter_token: '00000000-0000-0000-0000-000000000000'
