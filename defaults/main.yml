@@ -1,9 +1,8 @@
 ---
 # General parameters #
 redis_is_install: false # A boolean value, whether install the Redis.
-redis_selinux: false # SELinux security policy.
 redis_path: '/data' # Specify the Redis data directory.
-redis_requirepass: 'password' # Authorization clients password.
+redis_requirepass: 'changeme' # Authorization clients password.
 
 # Service Mesh #
 environments: 'SIT' # Define the service environment.

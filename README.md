@@ -37,7 +37,6 @@ This role will work on the following operating systems:
 ### Main parameters #
 There are some variables in defaults/main.yml which can (Or needs to) be overridden:
 ##### General parameters
-* `redis_selinux`: false SELinux security policy.
 * `redis_path`: Specify the Redis data directory.
 * `redis_requirepass`: Authorization clients password.
 
@@ -83,7 +82,6 @@ Including an example of how to use your role (for instance, with variables passe
 ### Combination of group vars and playbook
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`
 
-    redis_selinux: false
     redis_path: '/data'
     redis_requirepass: 'password'
     redis_port: '6379'

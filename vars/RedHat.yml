@@ -1,8 +1,10 @@
 ---
-redis_repo_name: "remi"
+redis_repo_name: 'remi'
 redis_repo_url: "http://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/{{ansible_distribution_version.split('.')[0]}}/remi/{{ansible_architecture}}/"
 redis_packages:
   - 'redis'
+  - 'libselinux-utils'
+  - 'policycoreutils-python'
 
 redis_exporter_repo_name: "prometheus"
 redis_exporter_repo_url: "http://cache.omygods.com/prometheus-rpm/release/el/{{ansible_distribution_version.split('.')[0]}}/$basearch"
