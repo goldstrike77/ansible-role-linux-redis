@@ -1,4 +1,19 @@
 ---
+- name: Gather Redis node variables for cluster.
+  set_fact:
+    redis_servers: "\
+      {% set _redis_servers = [] %}\
+      {% for host in groups[group_names[-1]] %}\
+        {% if redis_cluster_name is defined %}\
+          {% set _redis_cluster_name = redis_cluster_name | default('') %}\
+          {% if ( _redis_cluster_name == redis_cluster_name ) %}\
+            {% if _redis_servers.append(hostvars[host]['ansible_host']) %}{% endif %}\
+          {% endif %}\
+        {% endif %}\
+      {% endfor %}\
+      {{ _redis_servers }}"
+  when: redis_cluster_mode != 'standalone'
+
 - name: Include tasks for specific OS
   include: '{{ ansible_os_family }}.yml'
 
@@ -26,6 +41,43 @@
   register: conf_update
   no_log: true
 
+- name: Redis Server Slave Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis.conf'
+    regexp: '^slaveof '
+    line: 'slaveof {{ redis_servers[0] }} {{ redis_port }}'
+  register: slave_conf_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+    - redis_servers[0] not in ansible_default_ipv4.address
+
+- name: Redis Sentinel monitor Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis-sentinel.conf'
+    regexp: '^sentinel monitor '
+    line: 'sentinel monitor {{ redis_cluster_name }} {{ redis_servers[0] }} {{ redis_port }} {{ redis_servers | length - 1 }}'
+  register: sentinel_monitor_conf_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+  no_log: true
+
+- name: Redis Sentinel Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis-sentinel.conf'
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  loop: '{{ redis_sentinel_parameters }}'
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+  register: sentinel_conf_update
+  no_log: true
+
 - name: Rename an unsafe redis command
   lineinfile:
     state: 'present'
@@ -42,7 +94,7 @@
     state: 'present'
     reload: 'yes'
     sysctl_set: 'yes'
-    sysctl_file: /etc/sysctl.d/20-sysctl.conf
+    sysctl_file: '/etc/sysctl.d/20-sysctl.conf'
   loop: '{{ redis_kernel_parameters }}'
 
 - name: Reload the Redis configuration
@@ -53,6 +105,18 @@
     daemon_reload: 'yes'
   when:
     - conf_update is changed or comm_update is changed
+    - ansible_distribution_major_version|int > 6
+
+- name: Reload the Redis Sentinels configuration
+  systemd:
+    name: 'redis-sentinel.service'
+    enabled: 'yes'
+    state: 'restarted'
+    daemon_reload: 'yes'
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+    - sentinel_conf_update is changed or sentinel_monitor_conf_update is changed
     - ansible_distribution_major_version|int > 6
 
 - name: Include prometheus exporter tasks

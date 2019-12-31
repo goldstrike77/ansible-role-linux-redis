@@ -3,6 +3,8 @@
 redis_is_install: false # A boolean value, whether install the Redis.
 redis_path: '/data' # Specify the Redis data directory.
 redis_requirepass: 'changeme' # Authorization clients password.
+redis_cluster_name: 'cluster01' # Cluster name of servers that implements distribution performance.
+redis_cluster_mode: 'standalone' # Defines type of cluster type: sentinel / standalone. 
 
 # Service Mesh #
 environments: 'SIT' # Define the service environment.
@@ -21,7 +23,9 @@ consul_public_clients: # List of public consul clients.
 
 # Listen port #
 redis_port: '6379' # Redis listen.
+redis_sentinel_port: '26379' # Redis sentinel listen.
 redis_exporter_port: '9121' # Prometheus Redis exporter.
+redis_sentinel_exporter_port: '9355' # Prometheus Redis Sentinel exporter.
 
 # Server System Variables #
 redis_tcp_backlog: '16384' # TCP listen backlog.

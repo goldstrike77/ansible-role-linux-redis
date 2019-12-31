@@ -39,6 +39,8 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 ##### General parameters
 * `redis_path`: Specify the Redis data directory.
 * `redis_requirepass`: Authorization clients password.
+* `redis_cluster_name`: Cluster name of servers that implements distribution performance.
+* `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
 
 ##### Service Mesh
 * `environments`: Define the service environment.
@@ -52,6 +54,8 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 ##### Listen port
 * `redis_port`: Redis listen.
 * `redis_exporter_port`: Prometheus Redis exporter.
+* `redis_sentinel_port`: Redis sentinel listen.
+* `redis_sentinel_exporter_port`: Prometheus Redis Sentinel exporter.
 
 ##### Server System Variables
 * `redis_tcp_backlog`: TCP listen backlog.
@@ -84,8 +88,12 @@ You can also use the group_vars or the host_vars files for setting the variables
 
     redis_path: '/data'
     redis_requirepass: 'password'
+    redis_cluster_name: 'cluster01'
+    redis_cluster_mode: 'standalone'
     redis_port: '6379'
     redis_exporter_port: '9121'
+    redis_sentinel_port: '26379'
+    redis_sentinel_exporter_port: '9355'
     redis_tcp_backlog: '16384'
     redis_timeout: '300'
     redis_tcp_keepalive: '60'

@@ -38,3 +38,50 @@
     state: 'restarted'
     daemon_reload: 'yes'
   when: soft_update is changed or conf_update is changed
+
+- name: Redis Sentinel exporter program binary transfer.
+  unarchive:
+    src: 'redis_sentinel_exporter.tar.xz'
+    dest: '/usr/local/bin'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  register: redis_sentinel_exporter_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+
+- name: Redis Sentinel exporter configure file transfer.
+  template:
+    src: 'redis_sentinel_exporter.default.j2'
+    dest: '/etc/default/redis_sentinel_exporter'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  register: redis_sentinel_exporter_config
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+
+- name: Redis Sentinel service file transfer.
+  copy:
+    src: 'redis_sentinel_exporter.service'
+    dest: '/lib/systemd/system'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  register: redis_sentinel_systemd_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+
+- name: Reloading the Redis Sentinel exporter service.
+  systemd:
+    name: 'redis_sentinel_exporter.service'
+    enabled: 'yes'
+    state: 'restarted'
+    daemon_reload: 'yes'
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+    - redis_sentinel_exporter_update is changed or redis_sentinel_exporter_config is changed or redis_sentinel_systemd_update is changed
