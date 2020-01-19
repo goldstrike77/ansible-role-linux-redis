@@ -42,15 +42,6 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_cluster_name`: Cluster name of servers that implements distribution performance.
 * `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
 
-##### Service Mesh
-* `environments`: Define the service environment.
-* `tags`: Define the service custom label.
-* `exporter_is_install`: Whether to install prometheus exporter.
-* `consul_public_register`: false Whether register a exporter service with public consul client.
-* `consul_public_exporter_token`: Public Consul client ACL token.
-* `consul_public_clients`: List of public consul clients.
-* `consul_public_http_port`: The consul HTTP API port.
-
 ##### Listen port
 * `redis_port`: Redis listen.
 * `redis_exporter_port`: Prometheus Redis exporter.
@@ -66,6 +57,15 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_ulimit_nproc`: The number of processes launched by systemd.
 * `redis_ulimit_nofile`: The number of files launched by systemd.
 * `redis_renamed_commands`: Disabling of specific commands.
+
+##### Service Mesh
+* `environments`: Define the service environment.
+* `tags`: Define the service custom label.
+* `exporter_is_install`: Whether to install prometheus exporter.
+* `consul_public_register`: false Whether register a exporter service with public consul client.
+* `consul_public_exporter_token`: Public Consul client ACL token.
+* `consul_public_clients`: List of public consul clients.
+* `consul_public_http_port`: The consul HTTP API port.
 
 ### Other parameters
 There are some variables in vars/main.yml:
@@ -105,7 +105,7 @@ You can also use the group_vars or the host_vars files for setting the variables
       - 'CONFIG'
       - 'DEBUG'
       - 'SHUTDOWN'
-    environments: 'SIT'
+    environments: 'Development'
     tags:
       subscription: 'default'
       owner: 'nobody'

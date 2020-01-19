@@ -6,21 +6,6 @@ redis_requirepass: 'changeme' # Authorization clients password.
 redis_cluster_name: 'cluster01' # Cluster name of servers that implements distribution performance.
 redis_cluster_mode: 'standalone' # Defines type of cluster type: sentinel / standalone. 
 
-# Service Mesh #
-environments: 'SIT' # Define the service environment.
-#tags: # Define the service custom label.
-#  subscription: 'default'
-#  owner: 'nobody'
-#  department: 'Infrastructure'
-#  organization: 'The Company'
-#  region: 'IDC01'
-exporter_is_install: false # Whether to install prometheus exporter.
-consul_public_register: false # Whether register a exporter service with public consul client.
-consul_public_exporter_token: '00000000-0000-0000-0000-000000000000' # Public Consul client ACL token.
-consul_public_http_port: '8500' # The consul HTTP API port.
-consul_public_clients: # List of public consul clients.
-  - '127.0.0.1'
-
 # Listen port #
 redis_port: '6379' # Redis listen.
 redis_sentinel_port: '26379' # Redis sentinel listen.
@@ -50,3 +35,18 @@ redis_renamed_commands: # Disabling of specific commands.
 #  - 'SAVE'
 #  - 'SPOP'
 #  - 'SREM'
+
+# Service Mesh #
+environments: 'Development' # Define the service environment.
+#tags: # Define the service custom label.
+#  subscription: 'default'
+#  owner: 'nobody'
+#  department: 'Infrastructure'
+#  organization: 'The Company'
+#  region: 'IDC01'
+exporter_is_install: false # Whether to install prometheus exporter.
+consul_public_register: false # Whether register a exporter service with public consul client.
+consul_public_exporter_token: '00000000-0000-0000-0000-000000000000' # Public Consul client ACL token.
+consul_public_http_port: '8500' # The consul HTTP API port.
+consul_public_clients: # List of public consul clients.
+  - '127.0.0.1'
