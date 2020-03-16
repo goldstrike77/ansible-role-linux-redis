@@ -7,8 +7,8 @@ redis_server_parameters:
   - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
   - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}mb' }
   - { regexp: '^port ', line: 'port {{ redis_port }}' }
-  - { regexp: '^masterauth ', line: 'masterauth {{ redis_requirepass }}' }
-  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass }}' }
+  - { regexp: '^masterauth ', line: 'masterauth {{ redis_requirepass }}', create: '{{ redis_requirepass is defined }}' }
+  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass }}', create: '{{ redis_requirepass is defined }}' }
   - { regexp: '^supervised ', line: 'supervised systemd' }
   - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
   - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
@@ -18,13 +18,13 @@ redis_server_parameters:
 redis_sentinel_parameters:
   - { regexp: '^port ', line: 'port {{ redis_sentinel_port }}' }
   - { regexp: '^bind ', line: 'bind 0.0.0.0' }
-  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass }}' }
+  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass }}', create: '{{ redis_requirepass is defined }}' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
   - { regexp: '^sentinel down-after-milliseconds ', line: 'sentinel down-after-milliseconds {{ redis_cluster_name }} 5000' }
   - { regexp: '^sentinel parallel-syncs ', line: 'sentinel parallel-syncs {{ redis_cluster_name }} 1' }
   - { regexp: '^sentinel failover-timeout ', line: 'sentinel failover-timeout {{ redis_cluster_name }} 10000' }
-  - { regexp: '^sentinel auth-pass ', line: 'sentinel auth-pass {{ redis_cluster_name }} {{ redis_requirepass }}' }
+  - { regexp: '^sentinel auth-pass ', line: 'sentinel auth-pass {{ redis_cluster_name }} {{ redis_requirepass }}', create: '{{ redis_requirepass is defined }}' }
 
 redis_kernel_parameters:
   - { variable: 'vm.overcommit_memory', value: '1' }
