@@ -38,6 +38,7 @@ This role will work on the following operating systems:
 There are some variables in defaults/main.yml which can (Or needs to) be overridden:
 ##### General parameters
 * `redis_path`: Specify the Redis data directory.
+* `redis_authorization`: A boolean value, Enable or Disable authentication.
 * `redis_requirepass`: Authorization clients password.
 * `redis_cluster_name`: Cluster name of servers that implements distribution performance.
 * `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
@@ -88,6 +89,7 @@ Including an example of how to use your role (for instance, with variables passe
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`
 
     redis_path: '/data'
+    redis_authorization: true
     redis_requirepass: 'password'
     redis_cluster_name: 'cluster01'
     redis_cluster_mode: 'standalone'

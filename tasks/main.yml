@@ -38,8 +38,9 @@
     regexp: '{{ item.regexp }}'
     line: '{{ item.line }}'
   loop: '{{ redis_server_parameters }}'
+  when: item.create | default(true) | bool
   register: conf_update
-  no_log: true
+#  no_log: true
 
 - name: Redis Server Slave Configuration
   lineinfile:
