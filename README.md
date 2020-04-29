@@ -75,7 +75,8 @@ There are some variables in vars/main.yml:
 * `redis_kernel_parameters`: Operating system variables.
 
 ## Dependencies
-There are no dependencies on other roles.
+- Ansible versions >= 2.8
+- Python >= 2.7.5
 
 ## Example
 ### Vars in role configuration
