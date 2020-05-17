@@ -27,6 +27,10 @@ __Table of Contents__
 ## Overview
 This Ansible role installs Redis on linux operating system, including establishing a filesystem structure and server configuration with some common operational features.
 
+Redis provides high availability via Redis Sentinel distributed system. Sentinel helps to monitor Redis instances, detect failures and will do roles switches automatically thus enabling a Redis deployment to resist any kind of failures.
+
+It features monitoring of Redis instances (master and replicas), supports notification of other services/processes or the system administrator, automatic failover to promote a replica to a master when the master goes down and provides configuration for clients to discover the current master offering a particular service.
+
 ## Requirements
 ### Operating systems
 This role will work on the following operating systems:
