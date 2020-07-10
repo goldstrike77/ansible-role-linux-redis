@@ -17,17 +17,17 @@
   loop: '{{ redis_exporter_packages }}'
   register: soft_update
   until: soft_update is succeeded
-  retries: 3
-  delay: 5
+  retries: 5
+  delay: 2
 
 - name: Prometheus redis_exporter configure file transfer
   template:
     src: 'redis_exporter'
     dest: '/etc/default/'
     backup: 'yes'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: 'prometheus'
+    group: 'prometheus'
+    mode: '0640'
   register: conf_update
   no_log: true
 
@@ -55,9 +55,9 @@
   template:
     src: 'redis_sentinel_exporter.default.j2'
     dest: '/etc/default/redis_sentinel_exporter'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: 'prometheus'
+    group: 'prometheus'
+    mode: '0640'
   register: redis_sentinel_exporter_config
   when:
     - redis_cluster_mode == 'sentinel'

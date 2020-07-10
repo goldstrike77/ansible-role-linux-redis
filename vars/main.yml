@@ -1,12 +1,18 @@
 ---
 redis_server_parameters:
+  - { regexp: '^tls-auth-clients ', line: 'tls-auth-clients no', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-replication ', line: 'tls-replication yes', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-cert-file ', line: 'tls-cert-file {{ redis_cert_path }}/server.crt', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-key-file ', line: 'tls-key-file {{ redis_cert_path }}/server.key', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-ca-cert-file ', line: 'tls-ca-cert-file {{ redis_cert_path }}/ca-cert.pem', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
   - { regexp: '^appendonly ', line: 'appendonly yes' }
-  - { regexp: '^bind ', line: 'bind 0.0.0.0' }
+  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }}' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
   - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
   - { regexp: '^maxmemory ', line: 'maxmemory {{ redis_maxmemory }}mb' }
-  - { regexp: '^port ', line: 'port {{ redis_port }}' }
+  - { regexp: '^port ', line: 'port {% if redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 %}0{% else %}{{ redis_port }}{% endif %}' }
+  - { regexp: '^tls-port ', line: 'tls-port {{ redis_port }}', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
   - { regexp: '^masterauth ', line: 'masterauth {{ redis_requirepass | default("changeme") }}', create: '{{ redis_authorization | bool }}' }
   - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass | default("changeme") }}', create: '{{ redis_authorization | bool }}' }
   - { regexp: '^supervised ', line: 'supervised systemd' }
@@ -16,11 +22,18 @@ redis_server_parameters:
   - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
 
 redis_sentinel_parameters:
-  - { regexp: '^port ', line: 'port {{ redis_sentinel_port }}' }
-  - { regexp: '^bind ', line: 'bind 0.0.0.0' }
+  - { regexp: '^tls-auth-clients ', line: 'tls-auth-clients no', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-replication ', line: 'tls-replication yes', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-cert-file ', line: 'tls-cert-file {{ redis_cert_path }}/server.crt', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-key-file ', line: 'tls-key-file {{ redis_cert_path }}/server.key', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^tls-ca-cert-file ', line: 'tls-ca-cert-file {{ redis_cert_path }}/ca-cert.pem', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^port ', line: 'port {% if redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 %}0{% else %}{{ redis_sentinel_port }}{% endif %}' }
+  - { regexp: '^tls-port ', line: 'tls-port {{ redis_sentinel_port }}', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
+  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }}' }
   - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass | default("changeme") }}', create: '{{ redis_authorization | bool }}' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
+  - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
   - { regexp: '^sentinel down-after-milliseconds ', line: 'sentinel down-after-milliseconds {{ redis_cluster_name }} 5000' }
   - { regexp: '^sentinel parallel-syncs ', line: 'sentinel parallel-syncs {{ redis_cluster_name }} 1' }
   - { regexp: '^sentinel failover-timeout ', line: 'sentinel failover-timeout {{ redis_cluster_name }} 10000' }
@@ -28,3 +41,16 @@ redis_sentinel_parameters:
 
 redis_kernel_parameters:
   - { variable: 'vm.overcommit_memory', value: '1' }
+  - { variable: 'net.core.somaxconn', value: '65535' }
+
+redis_folder:
+  - '{{ redis_path }}/redis'
+  - '{{ redis_path }}/backup/redis'
+
+redis_cert_path: '/etc/redis/ssl'
+
+redis_pypi_url: 'pypi.tuna.tsinghua.edu.cn'
+
+redis_python_dependent_packages:
+  - 'pip'
+  - 'cryptography'

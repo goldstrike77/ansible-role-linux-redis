@@ -1,0 +1,77 @@
+---
+- name: Creating Redis folder
+  file:
+    dest: '{{ item }}'
+    state: 'directory'
+    owner: 'redis'
+    group: 'redis'
+    mode: '0755'
+  loop: '{{ redis_folder }}'
+
+- name: Redis Server Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis.conf'
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  loop: '{{ redis_server_parameters }}'
+  when: item.create | default(true) | bool
+  register: conf_update
+  no_log: true
+
+- name: Redis Server Slave Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis.conf'
+    regexp: '^slaveof '
+    line: 'slaveof {{ redis_servers[0] }} {{ redis_port }}'
+  register: slave_conf_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+    - redis_servers[0] not in ansible_default_ipv4.address
+
+- name: Redis Sentinel monitor Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis-sentinel.conf'
+    regexp: '^sentinel monitor '
+    line: 'sentinel monitor {{ redis_cluster_name }} {{ redis_servers[0] }} {{ redis_port }} {{ redis_servers | length - 1 }}'
+  register: sentinel_monitor_conf_update
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+  no_log: true
+
+- name: Redis Sentinel Configuration
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis-sentinel.conf'
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  loop: '{{ redis_sentinel_parameters }}'
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length > 2
+    - item.create | default(true) | bool
+  register: sentinel_conf_update
+  no_log: true
+
+- name: Rename an unsafe redis command
+  lineinfile:
+    state: 'present'
+    dest: '/etc/redis.conf'
+    regexp: '^rename-command {{ item }}'
+    line: 'rename-command {{ item }} "{{ item|hash("md5") }}"'
+  loop: '{{ redis_renamed_commands }}'
+  register: comm_update
+
+- name: Configure kernel parameters
+  sysctl:
+    name: '{{ item.variable }}'
+    value: '{{ item.value }}'
+    state: 'present'
+    reload: 'yes'
+    sysctl_set: 'yes'
+    sysctl_file: '/etc/sysctl.d/20-sysctl.conf'
+  loop: '{{ redis_kernel_parameters }}'

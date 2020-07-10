@@ -23,80 +23,15 @@
 - name: Straight to getenforce selinux status
   include: 'selinux.yml'
 
-- name: Creating Redis folder
-  file:
-    dest: '{{ redis_path }}/redis'
-    state: 'directory'
-    owner: 'redis'
-    group: 'redis'
-    mode: '0755'
-
-- name: Redis Server Configuration
-  lineinfile:
-    state: 'present'
-    dest: '/etc/redis.conf'
-    regexp: '{{ item.regexp }}'
-    line: '{{ item.line }}'
-  loop: '{{ redis_server_parameters }}'
-  when: item.create | default(true) | bool
-  register: conf_update
-  no_log: true
-
-- name: Redis Server Slave Configuration
-  lineinfile:
-    state: 'present'
-    dest: '/etc/redis.conf'
-    regexp: '^slaveof '
-    line: 'slaveof {{ redis_servers[0] }} {{ redis_port }}'
-  register: slave_conf_update
+- name: Include certificate tasks
+  include: 'certificates.yml'
   when:
-    - redis_cluster_mode == 'sentinel'
-    - redis_servers | length > 2
-    - redis_servers[0] not in ansible_default_ipv4.address
+    - redis_ssl | bool
+    - redis_authorization | bool
+    - redis_version | int > 5
 
-- name: Redis Sentinel monitor Configuration
-  lineinfile:
-    state: 'present'
-    dest: '/etc/redis-sentinel.conf'
-    regexp: '^sentinel monitor '
-    line: 'sentinel monitor {{ redis_cluster_name }} {{ redis_servers[0] }} {{ redis_port }} {{ redis_servers | length - 1 }}'
-  register: sentinel_monitor_conf_update
-  when:
-    - redis_cluster_mode == 'sentinel'
-    - redis_servers | length > 2
-  no_log: true
-
-- name: Redis Sentinel Configuration
-  lineinfile:
-    state: 'present'
-    dest: '/etc/redis-sentinel.conf'
-    regexp: '{{ item.regexp }}'
-    line: '{{ item.line }}'
-  loop: '{{ redis_sentinel_parameters }}'
-  when:
-    - redis_cluster_mode == 'sentinel'
-    - redis_servers | length > 2
-  register: sentinel_conf_update
-  no_log: true
-
-- name: Rename an unsafe redis command
-  lineinfile:
-    state: 'present'
-    dest: '/etc/redis.conf'
-    regexp: '^rename-command {{ item }}'
-    line: 'rename-command {{ item }} "{{ item|hash("md5") }}"'
-  loop: '{{ redis_renamed_commands }}'
-  register: comm_update
-
-- name: Configure kernel parameters
-  sysctl:
-    name: '{{ item.variable }}'
-    value: '{{ item.value }}'
-    state: 'present'
-    reload: 'yes'
-    sysctl_set: 'yes'
-    sysctl_file: '/etc/sysctl.d/20-sysctl.conf'
-  loop: '{{ redis_kernel_parameters }}'
+- name: Configuration the Redis
+  include: 'configureation.yml'
 
 - name: Reload the Redis configuration
   systemd:
@@ -119,6 +54,9 @@
     - redis_servers | length > 2
     - sentinel_conf_update is changed or sentinel_monitor_conf_update is changed
     - ansible_distribution_major_version|int > 6
+
+- name: Include backup tasks
+  include: 'backup.yml'
 
 - name: Include prometheus exporter tasks
   include: 'exporter.yml'

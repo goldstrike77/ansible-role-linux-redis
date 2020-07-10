@@ -1,0 +1,7 @@
+[redis]
+type = {{ redis_backupset_arg.cloud_drive }}
+{% if redis_backupset_arg.cloud_drive == 'azureblob' %}
+account = {{ redis_backupset_arg.cloud_config.account }}
+key = {{ redis_backupset_arg.cloud_config.key }}
+endpoint = {{ redis_backupset_arg.cloud_config.endpoint }}
+{% endif %}

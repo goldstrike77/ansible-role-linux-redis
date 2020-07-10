@@ -7,11 +7,12 @@ After=network.target
 
 [Service]
 EnvironmentFile=-/etc/default/redis_sentinel_exporter
-User=redis
+User=prometheus
 LimitNOFILE=4096
 LimitNPROC=4096
 ExecStart=/usr/local/bin/redis_sentinel_exporter $REDSIS_SENTINEL_EXPORTER_OPTS
 Restart=on-failure
+RestartSec=30s
 
 [Install]
 WantedBy=multi-user.target
