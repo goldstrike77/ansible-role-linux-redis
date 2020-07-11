@@ -1,11 +1,14 @@
 ---
 - name: Creating Redis backup folder.
   file:
-    dest: '{{ redis_path }}/backup/redis'
+    dest: '{{ redis_path }}/{{ item.path }}'
     state: 'directory'
-    owner: 'redis'
-    group: 'redis'
-    mode: '0755'
+    owner: '{{ item.owner }}'
+    group: '{{ item.owner }}'
+    mode: '{{ item.mode }}'
+  loop:
+    - { path: 'backup', owner: 'root', mode: '0755' }
+    - { path: 'backup/redis', owner: 'redis', mode: '0640' } 
 
 - name: Creating Rclone configureation folder.
   file:
