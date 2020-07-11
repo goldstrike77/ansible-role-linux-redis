@@ -1,12 +1,11 @@
 ---
 - name: Creating Redis folder
   file:
-    dest: '{{ item }}'
+    dest: '{{ redis_path }}/redis'
     state: 'directory'
     owner: 'redis'
     group: 'redis'
-    mode: '0755'
-  loop: '{{ redis_folder }}'
+    mode: '0750'
 
 - name: Redis Server Configuration
   lineinfile:

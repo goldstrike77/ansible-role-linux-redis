@@ -43,10 +43,6 @@ redis_kernel_parameters:
   - { variable: 'vm.overcommit_memory', value: '1' }
   - { variable: 'net.core.somaxconn', value: '65535' }
 
-redis_folder:
-  - '{{ redis_path }}/redis'
-  - '{{ redis_path }}/backup/redis'
-
 redis_cert_path: '/etc/redis/ssl'
 
 redis_pypi_url: 'pypi.tuna.tsinghua.edu.cn'
