@@ -37,9 +37,9 @@ redis_maxmemory: '{% if ansible_memtotal_mb < 4095 %}{{ (ansible_memtotal_mb * 0
 redis_ulimit_nproc: '65535' # The number of processes launched by systemd.
 redis_ulimit_nofile: '65535' # The number of files launched by systemd.
 redis_renamed_commands: # Disabling of specific commands.
-  - 'CONFIG'
   - 'DEBUG'
   - 'SHUTDOWN'
+#  - 'CONFIG'
 #  - 'BGREWRITEAOF'
 #  - 'BGSAVE'
 #  - 'DEL'

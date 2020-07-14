@@ -144,7 +144,6 @@ redis_maxmemory: '1024'
 redis_ulimit_nproc: '65535'
 redis_ulimit_nofile: '65535'
 redis_renamed_commands:
-  - 'CONFIG'
   - 'DEBUG'
   - 'SHUTDOWN'
 environments: 'Development'

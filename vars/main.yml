@@ -6,7 +6,7 @@ redis_server_parameters:
   - { regexp: '^tls-key-file ', line: 'tls-key-file {{ redis_cert_path }}/server.key', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
   - { regexp: '^tls-ca-cert-file ', line: 'tls-ca-cert-file {{ redis_cert_path }}/ca-cert.pem', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
   - { regexp: '^appendonly ', line: 'appendonly yes' }
-  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }}' }
+  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }} 127.0.0.1' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
   - { regexp: '^maxclients ', line: 'maxclients {{ redis_maxclients }}' }
@@ -20,6 +20,7 @@ redis_server_parameters:
   - { regexp: '^tcp-backlog ', line: 'tcp-backlog {{ redis_tcp_backlog }}' }
   - { regexp: '^tcp-keepalive ', line: 'tcp-keepalive {{ redis_tcp_keepalive }}' }
   - { regexp: '^timeout ', line: 'timeout {{ redis_timeout }}' }
+  - { regexp: '^protected-mode ', line: 'protected-mode no' }
 
 redis_sentinel_parameters:
   - { regexp: '^tls-auth-clients ', line: 'tls-auth-clients no', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
@@ -29,7 +30,8 @@ redis_sentinel_parameters:
   - { regexp: '^tls-ca-cert-file ', line: 'tls-ca-cert-file {{ redis_cert_path }}/ca-cert.pem', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
   - { regexp: '^port ', line: 'port {% if redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 %}0{% else %}{{ redis_sentinel_port }}{% endif %}' }
   - { regexp: '^tls-port ', line: 'tls-port {{ redis_sentinel_port }}', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 }}' }
-  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }}' }
+  - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }} 127.0.0.1' }
+  - { regexp: '^protected-mode ', line: 'protected-mode no' }
   - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass | default("changeme") }}', create: '{{ redis_authorization | bool }}' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
