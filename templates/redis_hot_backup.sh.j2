@@ -6,8 +6,7 @@ DATE=`/bin/date '+%Y%m%d_%H%M%S'`
 FIND=/bin/find
 OPENSSL=/bin/openssl
 RCLONE=/bin/rclone
-WAIT=10
-TRY=5
+WAIT=20
 TMPFILE="/tmp/redis-backup-runner.$$.tmp"
 REDIS_CLI="/usr/bin/redis-cli -p {{ redis_port }} -h {{ ansible_default_ipv4.address }}{% if redis_authorization | bool %} -a {{ redis_requirepass }}{% endif %}{% if redis_authorization | bool and redis_ssl | bool and redis_version | int > 5 %} --tls --cert {{ redis_cert_path }}/server.crt --key {{ redis_cert_path }}/server.key --cacert {{ redis_cert_path }}/ca-cert.pem{% endif %}"
 
@@ -15,26 +14,17 @@ REDIS_CLI="/usr/bin/redis-cli -p {{ redis_port }} -h {{ ansible_default_ipv4.add
 echo bgsave | $REDIS_CLI
 echo "waiting for $WAIT seconds..."
 sleep $WAIT
-
-while [ $TRY -gt 0 ] ; do
-  ## redis-cli output dos format line feed '\r\n', remove '\r'
-  bg=$(echo 'info Persistence' | $REDIS_CLI | $AWK -F: '/rdb_bgsave_in_progress/{sub(/\r/, "", $0); print $2}')
-  ok=$(echo 'info Persistence' | $REDIS_CLI | $AWK -F: '/rdb_last_bgsave_status/{sub(/\r/, "", $0); print $2}')
-  if [[ "$bg" = "0" ]] && [[ "$ok" = "ok" ]] ; then
-    # -p: keeps mode, ownership and timestamp. The command is same as --preserve=mode,ownership,timestamps
-    # -u: copy only when the SOURCE file is newer than the destination file or when the destination file is missing
-    $TAR zcvfP - {{ redis_path }}/redis/dump.rdb | $OPENSSL aes-256-cbc -salt -k '{{ redis_backupset_arg.encryptkey | default("changeme") }}' -out {{ redis_path }}/backup/redis/redis-dump-$DATE.tar.gz >> $TMPFILE 2>&1
-    if [ $? = 0 ] ; then
-      echo "Rdis rdb copied to {{ redis_path }}/backup/redis." >> $TMPFILE 2>&1
-      exit 0
-    else
-      echo "Failed to copy to {{ redis_path }}/backup/redis!" >> $TMPFILE 2>&1
-    fi
+bg=$(echo 'info Persistence' | $REDIS_CLI | $AWK -F: '/rdb_bgsave_in_progress/{sub(/\r/, "", $0); print $2}')
+ok=$(echo 'info Persistence' | $REDIS_CLI | $AWK -F: '/rdb_last_bgsave_status/{sub(/\r/, "", $0); print $2}')
+if [[ "$bg" = "0" ]] && [[ "$ok" = "ok" ]] ; then
+  $TAR zcvfP - {{ redis_path }}/redis/dump.rdb | $OPENSSL aes-256-cbc -salt -k '{{ redis_backupset_arg.encryptkey | default("changeme") }}' -out {{ redis_path }}/backup/redis/redis-dump-$DATE.tar.gz >> $TMPFILE 2>&1
+  if [ $? = 0 ] ; then
+    echo "Rdis rdb copied to {{ redis_path }}/backup/redis." >> $TMPFILE 2>&1
+    exit 0
+  else
+    echo "Failed to copy to {{ redis_path }}/backup/redis!" >> $TMPFILE 2>&1
   fi
-  TRY=$((TRY - 1))
-  echo "redis maybe busy, waiting and retry in 5s." >> $TMPFILE 2>&1
-  sleep 5
-done
+fi
 
 $FIND {{ redis_path }}/backup/redis -type f -mtime +{{ redis_backupset_arg.keep }} -exec $RM -fr {} \;
 
@@ -43,4 +33,4 @@ $FIND {{ redis_path }}/backup/redis -type f -mtime +{{ redis_backupset_arg.keep 
 $RCLONE --verbose --config="/etc/rclone/redis.conf" mkdir redis:{{ ansible_hostname | lower }} >> $TMPFILE 2>&1
 $RCLONE --bwlimit="{{ redis_backupset_arg.cloud_bwlimit | default('10M') }}" --verbose --config="/etc/rclone/redis.conf" {{ redis_backupset_arg.cloud_event | default('sync') }} {{ redis_path }}/backup/redis redis:{{ ansible_hostname | lower }}/redis >> $TMPFILE 2>&1
 {% endif %}
-exit 1
+exit 0
