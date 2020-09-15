@@ -28,7 +28,7 @@
   when:
     - redis_ssl | bool
     - redis_authorization | bool
-    - redis_version | int > 5
+    - redis_version.split('.')[0] | int > 5
 
 - name: Configuration the Redis
   include: 'configureation.yml'

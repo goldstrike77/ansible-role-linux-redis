@@ -64,7 +64,7 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_backupset_arg.keep`: Backup retention cycle in days.
 * `redis_backupset_arg.encryptkey`: BackupSet encryption key.
 * `redis_backupset_arg.cloud_rsync`: Whether rsync for cloud storage.
-* `redis_backupset_arg.cloud_drive`: Specify the cloud storage providers.
+* `redis_backupset_arg.cloud_drive`: Specify the cloud storage providers, azureblob / s3 for minio.
 * `redis_backupset_arg.cloud_bwlimit`: Controls the bandwidth limit.
 * `redis_backupset_arg.cloud_event`: Define transfer events.
 * `redis_backupset_arg.cloud_config`: Specify the cloud storage configuration.
@@ -114,7 +114,7 @@ Including an example of how to use your role (for instance, with variables passe
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`.
 
 ```yaml
-redis_version: '5'
+redis_version: '5.0.9'
 redis_path: '/data'
 redis_authorization: true
 redis_requirepass: 'changme'

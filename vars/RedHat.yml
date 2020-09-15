@@ -1,8 +1,5 @@
 ---
-redis_repo_name: 'remi'
-redis_repo_url: "http://mirrors.tuna.tsinghua.edu.cn/remi/enterprise/{{ansible_distribution_version.split('.')[0]}}/remi/{{ansible_architecture}}/"
-redis_packages:
-  - 'redis-{{ redis_version }}*'
+redis_dependent_packages:
   - 'libselinux-utils'
   - 'policycoreutils-python'
   - 'python-pip'

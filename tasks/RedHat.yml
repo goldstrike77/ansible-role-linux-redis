@@ -2,18 +2,20 @@
 - name: Include OS-specific variables
   include_vars: '{{ ansible_os_family }}.yml'
 
-- name: Add Redis YUM repositories
-  yum_repository:
-    name: '{{ redis_repo_name }}'
-    description: '{{ redis_repo_name }} RPM repository for Enterprise Linux'
-    file: '{{ redis_repo_name }}'
-    baseurl: '{{ redis_repo_url }}'
-    gpgcheck: 'no'
-    timeout: '60'
+- name: Install the Redis dependencies packages
+  yum:
+    name: '{{ redis_dependent_packages }}'
+    state: 'present'
+    validate_certs: 'no'
+    disable_gpg_check: 'yes'
+  register: soft_update
+  until: soft_update is succeeded
+  retries: 5
+  delay: 2
 
 - name: Install the Redis packages
   yum:
-    name: '{{ redis_packages }}'
+    name: 'http://rpms.remirepo.net/store/redis/{{ redis_version }}/redis-{{ redis_version }}-1.el{{ ansible_distribution_major_version }}.remi.{{ ansible_architecture }}.rpm'
     state: 'present'
     validate_certs: 'no'
     disable_gpg_check: 'yes'
