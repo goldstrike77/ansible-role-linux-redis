@@ -4,7 +4,7 @@ redis_dependent_packages:
   - 'policycoreutils-python'
   - 'python-pip'
 
-redis_exporter_repo_name: "prometheus"
-redis_exporter_repo_url: "http://cache.omygods.com/prometheus-rpm/release/el/{{ansible_distribution_version.split('.')[0]}}/$basearch"
+redis_exporter_repo_name: 'prometheus'
+redis_exporter_repo_url: 'http://cache.omygods.com/prometheus-rpm/release/el/$releasever/$basearch/'
 redis_exporter_packages:
   - 'redis_exporter'
