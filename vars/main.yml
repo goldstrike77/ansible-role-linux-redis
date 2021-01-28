@@ -50,5 +50,5 @@ redis_cert_path: '/etc/redis/ssl'
 redis_pypi_url: 'pypi.tuna.tsinghua.edu.cn'
 
 redis_python_dependent_packages:
-  - 'pip'
+  - 'pip==20.3.4'
   - 'cryptography'
