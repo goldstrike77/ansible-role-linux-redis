@@ -23,7 +23,7 @@ __Table of Contents__
   * [Combination of group vars and playbook](#combination-of-group-vars-and-playbook)
 - [License](#license)
 - [Author Information](#author-information)
-- [Contributors](#Contributors)
+- [Donations](#Donations)
 
 ## Overview
 Redis provides high availability via Redis Sentinel distributed system. Sentinel helps to monitor Redis instances, detect failures and will do roles switches automatically thus enabling a Redis deployment to resist any kind of failures.
@@ -83,13 +83,14 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `environments`: Define the service environment.
 * `datacenter`: Define the DataCenter.
 * `domain`: Define the Domain.
+* `customer`: Define the customer name.
 * `tags`: Define the service custom label.
 * `exporter_is_install`: Whether to install prometheus exporter.
 * `consul_public_register`: Whether register a exporter service with public consul client.
 * `consul_public_exporter_token`: Public Consul client ACL token.
 * `consul_public_http_prot`: The consul Hypertext Transfer Protocol.
-* `consul_public_http_port`: The consul HTTP API port.
 * `consul_public_clients`: List of public consul clients.
+* `consul_public_http_port`: The consul HTTP API port.
 
 ### Other parameters
 There are some variables in vars/main.yml:
@@ -114,7 +115,7 @@ Including an example of how to use your role (for instance, with variables passe
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`.
 
 ```yaml
-redis_version: '5.0.9'
+redis_version: '5.0.13'
 redis_path: '/data'
 redis_authorization: true
 redis_requirepass: 'changme'
@@ -146,9 +147,10 @@ redis_ulimit_nofile: '65535'
 redis_renamed_commands:
   - 'DEBUG'
   - 'SHUTDOWN'
-environments: 'Development'
+environments: 'prd'
 datacenter: 'dc01'
 domain: 'local'
+customer: 'demo'
 tags:
   subscription: 'default'
   owner: 'nobody'
@@ -170,5 +172,7 @@ consul_public_clients:
 ## Author Information
 Please send your suggestions to make this role better.
 
-## Contributors
-Special thanks to the [Connext Information Technology](http://www.connext.com.cn) for their contributions to this role.
+## Donations
+Please donate to the following monero address.
+
+    46CHVMbb6wQV2PJYEbahb353SYGqXhcdFQVEWdCnHb6JaR5125h3kNQ6bcqLye5G7UF7qz6xL9qHLDSAY3baagfmLZABz75

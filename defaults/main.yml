@@ -1,7 +1,7 @@
 ---
 # General parameters #
 redis_is_install: false # A boolean value, whether install the Redis.
-redis_version: '5.0.9' # Specify the Redis version.
+redis_version: '5.0.13' # Specify the Redis version.
 redis_path: '/data' # Specify the Redis data directory.
 redis_authorization: false # A boolean value, Enable or Disable authentication.
 redis_requirepass: 'changeme' # Authorization clients password.
@@ -18,7 +18,7 @@ redis_sentinel_exporter_port: '9355' # Prometheus Redis Sentinel exporter.
 # Backup parameters #
 redis_backupset_arg:
   keep: '7' # Backup retention cycle in days.
-  encryptkey: 'HgDEvnj5bfcq' # BackupSet encryption key, Decrypt by [openssl aes-256-cbc -d -k passwd -salt -in file.tar.gz | tar xzvf -].
+  encryptkey: 'changeme' # BackupSet encryption key, Decrypt by [openssl aes-256-cbc -d -k passwd -salt -in file.tar.gz | tar xzvf -].
   cloud_rsync: false # Whether rsync for cloud storage.
   cloud_drive: 'azureblob' # Specify the cloud storage providers, azureblob / s3 for minio.
   cloud_bwlimit: '10M' # Controls the bandwidth limit.
