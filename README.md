@@ -53,6 +53,8 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_ssl`: A boolean value, whether Encrypting client and cluster communications.
 * `redis_cluster_name`: Cluster name of servers that implements distribution performance.
 * `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
+* `redis_sentinel_authorization`: A boolean value, Enable or Disable sentinel authentication.
+* `redis_sentinel_requirepass`: Sentinel authorization clients password.
 
 ##### Listen port
 * `redis_port`: Redis listen.

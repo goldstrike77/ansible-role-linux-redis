@@ -8,6 +8,8 @@ redis_requirepass: 'changeme' # Authorization clients password.
 redis_ssl: false # A boolean value, whether Encrypting client and cluster communications.
 redis_cluster_name: 'cluster01' # Cluster name of servers that implements distribution performance.
 redis_cluster_mode: 'standalone' # Defines type of cluster type: sentinel / standalone. 
+redis_sentinel_authorization: false # A boolean value, Enable or Disable sentinel authentication.
+redis_sentinel_requirepass: 'changeme' # Sentinel authorization clients password.
 
 # Listen port #
 redis_port: '6379' # Redis listen.

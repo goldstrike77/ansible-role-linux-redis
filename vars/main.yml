@@ -32,7 +32,7 @@ redis_sentinel_parameters:
   - { regexp: '^tls-port ', line: 'tls-port {{ redis_sentinel_port }}', create: '{{ redis_authorization | bool and redis_ssl | bool and redis_version.split(".")[0] | int > 5 }}' }
   - { regexp: '^bind ', line: 'bind {{ ansible_default_ipv4.address }} 127.0.0.1' }
   - { regexp: '^protected-mode ', line: 'protected-mode no' }
-  - { regexp: '^requirepass ', line: 'requirepass {{ redis_requirepass | default("changeme") }}', create: '{{ redis_authorization | bool }}' }
+  - { regexp: '^requirepass ', line: 'requirepass {{ redis_sentinel_requirepass | default("changeme") }}', create: '{{ redis_sentinel_authorization | bool }}' }
   - { regexp: '^daemonize ', line: 'daemonize yes' }
   - { regexp: '^dir /', line: 'dir {{ redis_path }}/redis' }
   - { regexp: '^syslog-enabled ', line: 'syslog-enabled yes' }
@@ -51,6 +51,8 @@ redis_pypi_url: 'pypi.tuna.tsinghua.edu.cn'
 
 redis_python_dependent_packages:
   - 'pip==20.3.4'
+  - 'cffi==1.14.6'
+  - 'idna==2.10'
   - 'cryptography==2.4.2'
   - 'paramiko==2.4.3'
   - 'pyopenssl==19.0.0'
