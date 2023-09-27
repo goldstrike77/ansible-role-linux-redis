@@ -1,10 +1,10 @@
 ---
 redis_dependent_packages:
-  - 'libselinux-utils'
-  - 'policycoreutils-python'
-  - 'python-pip'
+  - "libselinux-utils"
+  - "policycoreutils-python"
+  - "python-pip"
 
-redis_exporter_repo_name: 'prometheus'
-redis_exporter_repo_url: 'http://cache.omygods.com/prometheus-rpm/release/el/$releasever/$basearch/'
+redis_exporter_repo_name: "prometheus"
+redis_exporter_repo_url: "http://packagecloud.io/prometheus-rpm/release/el/$releasever/$basearch"
 redis_exporter_packages:
-  - 'redis_exporter'
+  - "redis_exporter"

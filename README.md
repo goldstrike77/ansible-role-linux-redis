@@ -48,12 +48,12 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 ##### General parameters
 * `redis_version`: Specify the Redis version.
 * `redis_path`: Specify the Redis data directory.
-* `redis_authorization`: A boolean value, Enable or Disable authentication.
+* `redis_authorization`: A boolean to determine whether or not to enable authentication.
 * `redis_requirepass`: Authorization clients password.
-* `redis_ssl`: A boolean value, whether Encrypting client and cluster communications.
+* `redis_ssl`: A boolean to determine whether or not to Encrypting client and cluster communications.
 * `redis_cluster_name`: Cluster name of servers that implements distribution performance.
 * `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
-* `redis_sentinel_authorization`: A boolean value, Enable or Disable sentinel authentication.
+* `redis_sentinel_authorization`: A boolean to determine whether or not to enable sentinel authentication.
 * `redis_sentinel_requirepass`: Sentinel authorization clients password.
 
 ##### Listen port
@@ -77,6 +77,7 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_tcp_keepalive`: Client keepalive time in seconds.
 * `redis_maxclients`: The max number of connected clients at the same time.
 * `redis_maxmemory`: A memory usage limit to the specified amount in MB.
+* `redis_maxmemory_policy`: How Redis will select what to remove when maxmemory is reached.
 * `redis_ulimit_nproc`: The number of processes launched by systemd.
 * `redis_ulimit_nofile`: The number of files launched by systemd.
 * `redis_renamed_commands`: Disabling of specific commands.
@@ -117,7 +118,7 @@ Including an example of how to use your role (for instance, with variables passe
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`.
 
 ```yaml
-redis_version: '5.0.13'
+redis_version: '5.0.14'
 redis_path: '/data'
 redis_authorization: true
 redis_requirepass: 'changme'
@@ -144,6 +145,7 @@ redis_timeout: '300'
 redis_tcp_keepalive: '60'
 redis_maxclients: '10000'
 redis_maxmemory: '1024'
+redis_maxmemory_policy: "noeviction"
 redis_ulimit_nproc: '65535'
 redis_ulimit_nofile: '65535'
 redis_renamed_commands:

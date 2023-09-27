@@ -1,20 +1,20 @@
 ---
-- name: Gathering service facts
+- name: Gathering service facts.
   service_facts:
   register: services_state
 
-- name: Ensure Redis firewall port is allow
+- name: Ensure Redis firewall port is allow.
   firewalld:
-    port: '{{ item }}/tcp'
-    zone: 'public'
-    permanent: 'true'
-    immediate: 'true'
-    state: 'enabled'
+    port: "{{ item }}/tcp"
+    zone: "public"
+    permanent: "true"
+    immediate: "true"
+    state: "enabled"
   loop:
-    - '{{ redis_port }}'
-    - '{{ redis_sentinel_port }}'
-    - '{{ redis_exporter_port }}'
-    - '{{ redis_sentinel_exporter_port }}'
+    - "{{ redis_port }}"
+    - "{{ redis_sentinel_port }}"
+    - "{{ redis_exporter_port }}"
+    - "{{ redis_sentinel_exporter_port }}"
   when:
     - services_state.ansible_facts.services["firewalld.service"] is defined
     - services_state.ansible_facts.services["firewalld.service"].state == 'running'
