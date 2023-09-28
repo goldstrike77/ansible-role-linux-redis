@@ -37,6 +37,9 @@
     setype: "http_port_t"
     state: "present"
   loop:
-    - "{{ redis_port }}"
+    - "{{ redis_port | default(6379) }}"
+    - "{{ redis_cluster_port | default(16379) }}"
+    - "{{ redis_sentinel_port }}"
     - "{{ redis_exporter_port }}"
+    - "{{ redis_sentinel_exporter_port }}"
   when: redis_selinux | bool
