@@ -1,5 +1,5 @@
 ---
-- name: Add prometheus redis_exporter YUM repositories.
+- name: Add prometheus redis exporter YUM repositories.
   yum_repository:
     name: "{{ redis_exporter_repo_name }}"
     description: "{{ redis_exporter_repo_name }} YUM repository"
@@ -9,7 +9,7 @@
     sslverify: "no"
     timeout: "60"
 
-- name: Install the prometheus redis_exporter.
+- name: Install the prometheus redis exporter.
   yum:
     name: "{{ item }}"
     state: "present"
@@ -21,7 +21,7 @@
   retries: 5
   delay: 2
 
-- name: Prometheus redis_exporter configure file transfer.
+- name: Prometheus redis exporter configure file transfer.
   template:
     src: "redis_exporter"
     dest: "/etc/default/"

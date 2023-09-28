@@ -1,0 +1,17 @@
+---
+- name: Get redis cluster info
+  command: /usr/bin/redis-cli cluster info
+  register: redis_cluster_info
+  changed_when: false
+  failed_when: false
+
+- name: Create a redis cluster.
+  command: /usr/bin/redis-cli {% if redis_requirepass | bool %}-a {{ redis_requirepass }}{% endif %}{% if redis_ssl | bool %} --tls --cert {{ redis_cert_path }}/server.crt --key {{ redis_cert_path }}/server.crt --cacert {{ redis_cert_path }}/ca-key.pem{% endif %} --cluster create {{ redis_servers | list | join(":" + redis_port + " ") }}:{{ redis_port }} --cluster-replicas 1 --cluster-yes
+  changed_when: false
+  failed_when: false
+  when:
+    - redis_servers[0] in ansible_default_ipv4.address
+    - redis_cluster_mode == 'cluster'
+    - redis_servers | length == 6
+    - redis_cluster_info.rc == 0
+    - '"cluster_state:fail" in redis_cluster_info.stdout_lines'

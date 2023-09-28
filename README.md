@@ -52,12 +52,13 @@ There are some variables in defaults/main.yml which can (Or needs to) be overrid
 * `redis_requirepass`: Authorization clients password.
 * `redis_ssl`: A boolean to determine whether or not to Encrypting client and cluster communications.
 * `redis_cluster_name`: Cluster name of servers that implements distribution performance.
-* `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone.
+* `redis_cluster_mode`: Defines type of cluster type: sentinel / standalone / cluster.
 * `redis_sentinel_authorization`: A boolean to determine whether or not to enable sentinel authentication.
 * `redis_sentinel_requirepass`: Sentinel authorization clients password.
 
 ##### Listen port
 * `redis_port`: Redis listen.
+* `redis_cluster_port`: Redis Cluster listen.
 * `redis_exporter_port`: Prometheus Redis exporter.
 * `redis_sentinel_port`: Redis sentinel listen.
 * `redis_sentinel_exporter_port`: Prometheus Redis Sentinel exporter.
@@ -126,6 +127,7 @@ redis_ssl: false
 redis_cluster_name: 'cluster01'
 redis_cluster_mode: 'standalone'
 redis_port: '6379'
+redis_cluster_port: "16379"
 redis_exporter_port: '9121'
 redis_sentinel_port: '26379'
 redis_sentinel_exporter_port: '9355'

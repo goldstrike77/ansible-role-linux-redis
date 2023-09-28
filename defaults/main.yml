@@ -7,12 +7,13 @@ redis_authorization: false # A boolean to determine whether or not to enable aut
 redis_requirepass: "changeme" # Authorization clients password.
 redis_ssl: false # A boolean to determine whether or not to Encrypting client and cluster communications.
 redis_cluster_name: "cluster01" # Cluster name of servers that implements distribution performance.
-redis_cluster_mode: "standalone" # Defines type of cluster type: sentinel / standalone.
+redis_cluster_mode: "standalone" # Defines type of cluster type: sentinel / standalone / cluster.
 redis_sentinel_authorization: false # A boolean to determine whether or not to enable sentinel authentication.
 redis_sentinel_requirepass: "changeme" # Sentinel authorization clients password.
 
 # Listen port #
 redis_port: "6379" # Redis listen.
+redis_cluster_port: "16379" # Redis Cluster listen.
 redis_sentinel_port: "26379" # Redis sentinel listen.
 redis_exporter_port: "9121" # Prometheus Redis exporter.
 redis_sentinel_exporter_port: "9355" # Prometheus Redis Sentinel exporter.

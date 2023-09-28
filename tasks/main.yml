@@ -48,3 +48,10 @@
   when:
     - exporter_is_install | bool
     - consul_public_register | bool
+
+- name: Include cluster tasks.
+  include: "cluster.yml"
+  when:
+    - redis_servers[0] in ansible_default_ipv4.address
+    - redis_cluster_mode == 'cluster'
+    - redis_servers | length == 6

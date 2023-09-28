@@ -66,6 +66,16 @@ redis_server_parameters:
     }
   - { regexp: "^timeout ", line: "timeout {{ redis_timeout }}" }
   - { regexp: "^protected-mode ", line: "protected-mode no" }
+  - {
+      regexp: "^cluster-enabled ",
+      line: "cluster-enabled yes",
+      create: '{{ redis_cluster_mode == "cluster" }}',
+    }
+  - {
+      regexp: "^cluster-announce-bus-port ",
+      line: 'cluster-announce-bus-port {{ redis_cluster_port | default("16379") }}',
+      create: '{{ redis_cluster_mode == "cluster" }}',
+    }
 
 redis_sentinel_parameters:
   - {
