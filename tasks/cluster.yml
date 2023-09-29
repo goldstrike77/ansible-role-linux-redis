@@ -1,12 +1,12 @@
 ---
 - name: Get redis cluster info
-  command: /usr/bin/redis-cli cluster info
+  command: /usr/bin/redis-cli {% if redis_authorization | bool %}-a {{ redis_requirepass }}{% endif %}{% if redis_ssl | bool %} --tls --cert {{ redis_cert_path }}/server.crt --key {{ redis_cert_path }}/server.crt --cacert {{ redis_cert_path }}/ca-key.pem{% endif %} cluster info
   register: redis_cluster_info
   changed_when: false
   failed_when: false
 
 - name: Create a redis cluster.
-  command: /usr/bin/redis-cli {% if redis_requirepass | bool %}-a {{ redis_requirepass }}{% endif %}{% if redis_ssl | bool %} --tls --cert {{ redis_cert_path }}/server.crt --key {{ redis_cert_path }}/server.crt --cacert {{ redis_cert_path }}/ca-key.pem{% endif %} --cluster create {{ redis_servers | list | join(":" + redis_port + " ") }}:{{ redis_port }} --cluster-replicas 1 --cluster-yes
+  command: /usr/bin/redis-cli {% if redis_authorization | bool %}-a {{ redis_requirepass }}{% endif %}{% if redis_ssl | bool %} --tls --cert {{ redis_cert_path }}/server.crt --key {{ redis_cert_path }}/server.crt --cacert {{ redis_cert_path }}/ca-key.pem{% endif %} --cluster create {{ redis_servers | list | join(":" + redis_port + " ") }}:{{ redis_port }} --cluster-replicas 1 --cluster-yes
   changed_when: false
   failed_when: false
   when:
