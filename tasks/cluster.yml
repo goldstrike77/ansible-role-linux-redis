@@ -10,8 +10,5 @@
   changed_when: false
   failed_when: false
   when:
-    - redis_servers[0] in ansible_default_ipv4.address
-    - redis_cluster_mode == 'cluster'
-    - redis_servers | length == 6
     - redis_cluster_info.rc == 0
     - '"cluster_state:fail" in redis_cluster_info.stdout_lines'

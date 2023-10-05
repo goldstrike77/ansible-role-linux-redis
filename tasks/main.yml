@@ -33,10 +33,16 @@
 - name: Configuration the Redis.
   include: "configureation.yml"
 
+- name: Include sentinel tasks.
+  include: "sentinel.yml"
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length >= 3
+
 - name: Include backup tasks.
   include: "backup.yml"
 
-- name: Include prometheus exporter tasks
+- name: Include prometheus exporter tasks.
   include: "exporter.yml"
   when: exporter_is_install | bool
 
@@ -52,6 +58,36 @@
 - name: Include cluster tasks.
   include: "cluster.yml"
   when:
-    - redis_servers[0] in ansible_default_ipv4.address
     - redis_cluster_mode == 'cluster'
+    - redis_servers[0] in ansible_default_ipv4.address
     - redis_servers | length == 6
+
+- name: Cluster Members check.
+  debug:
+    msg:
+      - "The minimal cluster that works as expected must contain at least three master nodes,"
+      - "We strongly recommend a six-node cluster, with three masters and three replicas,"
+      - "Now is {{ redis_servers | length }},"
+      - "Task skipped completely."
+      - "集群必须至少包含三个主节点，"
+      - "强烈建议使用六节点集群，包括三个主节点和三个副本，"
+      - "实际节点数量为 {{ redis_servers | length }}，"
+      - "任务已跳过。"
+  when:
+    - redis_cluster_mode == 'cluster'
+    - redis_servers | length != 6
+  run_once: true
+
+- name: Sentinel Members check.
+  debug:
+    msg:
+      - "You need at least three Sentinel instances for a robust deployment,"
+      - "Now is {{ redis_servers | length }},"
+      - "Task skipped completely."
+      - "可靠的部署至少需要三个哨兵实例，"
+      - "实际节点数量为 {{ redis_servers | length }}，"
+      - "任务已跳过。"
+  when:
+    - redis_cluster_mode == 'sentinel'
+    - redis_servers | length < 3
+  run_once: true

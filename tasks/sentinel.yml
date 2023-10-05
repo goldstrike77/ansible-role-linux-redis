@@ -1,0 +1,29 @@
+---
+- name: Redis Server Slave Configuration.
+  lineinfile:
+    state: "present"
+    dest: "/etc/redis.conf"
+    regexp: "^slaveof "
+    line: "slaveof {{ redis_servers[0] }} {{ redis_port }}"
+  notify: Restart the Redis service.
+  when: redis_servers[0] not in ansible_default_ipv4.address
+
+- name: Redis Sentinel monitor Configuration.
+  lineinfile:
+    state: "present"
+    dest: "/etc/redis-sentinel.conf"
+    regexp: "^sentinel monitor "
+    line: "sentinel monitor {{ redis_cluster_name }} {{ redis_servers[0] }} {{ redis_port }} {{ redis_servers | length - 1 }}"
+  notify: Restart the Redis Sentinels service.
+  no_log: true
+
+- name: Redis Sentinel Configuration.
+  lineinfile:
+    state: "present"
+    dest: "/etc/redis-sentinel.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop: "{{ redis_sentinel_parameters }}"
+  when: item.create | default(true) | bool
+  notify: Restart the Redis Sentinels service.
+  no_log: true
