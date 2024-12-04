@@ -1,7 +1,7 @@
 ---
 # General parameters #
 redis_is_install: false # A boolean to determine whether or not to install the Redis.
-redis_version: "5.0.14" # Specify the Redis version.
+redis_version: "6.0.20" # Specify the Redis version.
 redis_path: "/data" # Specify the Redis data directory.
 redis_authorization: false # A boolean to determine whether or not to enable authentication.
 redis_requirepass: "changeme" # Authorization clients password.

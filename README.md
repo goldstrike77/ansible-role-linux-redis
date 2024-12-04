@@ -119,7 +119,7 @@ Including an example of how to use your role (for instance, with variables passe
 You can also use the group_vars or the host_vars files for setting the variables needed for this role. File you should change: group_vars/all or host_vars/`group_name`.
 
 ```yaml
-redis_version: '5.0.14'
+redis_version: '6.0.20'
 redis_path: '/data'
 redis_authorization: true
 redis_requirepass: 'changme'

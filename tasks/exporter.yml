@@ -11,11 +11,10 @@
 
 - name: Install the prometheus redis exporter.
   yum:
-    name: "{{ item }}"
+    name: "{{ redis_exporter_packages }}"
     state: "present"
     validate_certs: "no"
     disable_gpg_check: "yes"
-  loop: "{{ redis_exporter_packages }}"
   notify: Restart the Redis exporter service.
   until: soft_update is succeeded
   retries: 5

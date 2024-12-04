@@ -1,10 +1,15 @@
 ---
 redis_dependent_packages:
   - "libselinux-utils"
-  - "policycoreutils-python"
-  - "python-pip"
+  - "policycoreutils-python-utils"
+  - "python3-boto3"
+  - "python3-cffi"
+  - "python3-cryptography"
+  - "python3-idna"
+  - "python3-paramiko"
+  - "python3-pip"
+  - "python3-pyOpenSSL"
 
 redis_exporter_repo_name: "prometheus"
-redis_exporter_repo_url: "http://packagecloud.io/prometheus-rpm/release/el/$releasever/$basearch"
-redis_exporter_packages:
-  - "redis_exporter"
+redis_exporter_repo_url: "http://packagecloud.io/prometheus-rpm/release/el/$releasever/$basearch/"
+redis_exporter_packages: "redis_exporter"
